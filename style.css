@@ -1,0 +1,17 @@
+body {
+  display: flex;
+  background: rgb(221, 221, 224);
+  justify-content: center;
+  align-items: center;
+  
+}
+
+#calculator {
+  background: grey;
+  height: 300px;
+  width: 250px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
