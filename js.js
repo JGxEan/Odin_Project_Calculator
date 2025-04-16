@@ -1,17 +1,15 @@
+/* JS for calculator web app */
 
-let value1;
-let operator;
-let value2;
-let result;
-
-
+/* displayValue exists as a separate string to be updated independently 
+   for chaining calculations. So if you had 2 + 2 = 4, displayValue can
+   store the '4' for the next equation. */
 let displayValue = "";
 
 let display = document.getElementById("display");
 display.textContent = 0;
 
 
-
+// calc functions
 function add(x, y) {
   return x + y;
 }
@@ -32,10 +30,11 @@ function operate(x, y, operator) {
   return operator(x, y);
 }
 
+// create an equation object for calculations
 function Equation(equation) {
-  
-  this.x = equation.split(" ")[0],
-  this.y = equation.split(" ")[2],
+
+  this.x = +equation.split(" ")[0],
+  this.y = +equation.split(" ")[2],
   this.operator = equation.split(" ")[1],
 
   
@@ -57,10 +56,12 @@ function Equation(equation) {
 }
 
 
-
+/* saves all button element nodes to a node list, copies the reference 
+   to an array, and then maps through it with the clicker function. */
 const allBtns = document.querySelectorAll("button");
-let buttons = Array.from(allBtns);
+const buttons = Array.from(allBtns);
 buttons.map(clicker);
+
 
 function clicker(button) {
   button.addEventListener("click", () => {
@@ -74,49 +75,23 @@ function updateScreen(input) {
     switch(className) {
     case "numbers" :
       displayValue = displayValue + input.textContent;
-      display.textContent =  displayValue;
       break;
-    case "operands" :
-      if (!input.classList.contains("equal")) {
-      displayValue = displayValue + " " + input.textContent + " ";
-      display.textContent = displayValue;
+    case "operands" : //prevents multiple operands
+      if (!input.classList.contains("equal") && Number(displayValue.slice(-1))) {
+        displayValue = displayValue + " " + input.textContent + " ";
       }
       break;
     default:
       break;
     }
 
+ 
+
     if (input.classList.contains("clearBtn")) {
       displayValue = "";
       display.textContent = 0;
-    }
-    if (input.classList.contains("equal") && display.textContent.split(" ").length == 3) {
-      let equation = new Equation(display);
-      display = equation.operate;
-    }
-
-
-    // if (input.classList.contains("num")) {
-    // displayValue = displayValue + input.textContent;
-    // display.textContent =  displayValue;
-    // } else if {
-    //   displayValue = displayValue + " " + input.textContent + " ";
-    //   display.textContent = displayValue;
-    // }
+    } else if (input.classList.contains("equal") && display.textContent.split(" ").length == 3) {
+      let equation = new Equation(display.textContent);
+      display.textContent = equation.operate();
+    } else if (displayValue != "") { display.textContent = displayValue; }
 }
-
-
-
-// if (x === undefined) { 
-//   if ( btns.classList.contains("numbers")) {
-//     x = x + Number(btns.textContent);
-//   } else if (operator === undefined) {continue;}
-// } else if (operator === undefined) {
-//   if ( btns.classList.contains("operands")) {
-//     operator = btns.textContent;
-//   }
-// } else if (y === undefined) {
-//   if ( btns.classList.contains("operands")) {
-//     y = y + Number(btns.textContent);
-//   }
-// }
