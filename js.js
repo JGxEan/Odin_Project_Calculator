@@ -4,6 +4,7 @@
    for chaining calculations. So if you had 2 + 2 = 4, displayValue can
    store the '4' for the next equation. */
 let displayValue = "";
+let justSolved = false;
 
 let display = document.getElementById("display");
 display.textContent = 0;
@@ -74,11 +75,17 @@ function updateScreen(input) {
 
     switch(className) {
     case "numbers" :
-      displayValue = displayValue + input.textContent;
+      if (!justSolved){
+        displayValue = displayValue + input.textContent;
+      }
       break;
     case "operands" : //prevents multiple operands
-      if (!input.classList.contains("equal") && Number(displayValue.slice(-1))) {
-        displayValue = displayValue + " " + input.textContent + " ";
+      if (!input.classList.contains("equal") && 
+      (Number(displayValue.slice(-1)) || Number(displayValue.slice(-1)) == 0)) {
+        if (displayValue.match(" ") == null) {
+          displayValue = displayValue + " " + input.textContent + " ";
+          justSolved = false;
+        }
       }
       break;
     default:
@@ -90,8 +97,17 @@ function updateScreen(input) {
     if (input.classList.contains("clearBtn")) {
       displayValue = "";
       display.textContent = 0;
+      justSolved = false;
     } else if (input.classList.contains("equal") && display.textContent.split(" ").length == 3) {
-      let equation = new Equation(display.textContent);
-      display.textContent = equation.operate();
+      solver();
     } else if (displayValue != "") { display.textContent = displayValue; }
+}
+
+// creates an equation object and stores the result 
+function solver() {
+  let equation = new Equation(display.textContent);
+  display.textContent = equation.operate();
+
+  displayValue = display.textContent;
+  justSolved = true;
 }
